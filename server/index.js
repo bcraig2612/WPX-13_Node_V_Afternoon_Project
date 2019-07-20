@@ -4,16 +4,18 @@ require('dotenv').config();
 const express = require('express'); 
 const session = require('express-session');
 const massive = require('massive');
-// require the authController.js file storing it on a const variable called authCtrl
-const authCtrl = require('../controllers/authController');
-// require treasureController.js storing it on a const variable called treasureCtrl.
-const treasureCtrl = require('../controllers/treasureController');
-// Define a const variable called app equal to express invoked.
 const app = express();
 // Define a const variable called PORT equal to 4000
 const PORT = 4000;
 // destructure CONNECTION_STRING and SESSION_SECRET from process.env, storing it on a const variable.
 const { CONNECTION_STRING, SESSION_SECRET } = process.env;
+// require the authController.js file storing it on a const variable called authCtrl
+const authCtrl = require('../controllers/authController');
+// require treasureController.js storing it on a const variable called treasureCtrl.
+const treasureCtrl = require('../controllers/treasureController');
+// Define a const variable called app equal to express invoked.
+// Require authMiddleware.js and store it on a const variable called auth.
+const auth = require('../server/middleware/authMiddleware');
 // Use the json method of the express package as top level middleware.
 app.use(express.json());
 // Create the database connection by invoking massive and passing in the CONNECTION_STRING
@@ -39,6 +41,9 @@ app.get('/auth/logout', authCtrl.logout);
 // Create a get endpoint, '/api/treasure/dragon', with the function treasureCtrl.dragonTreasure.
 app.get('/api/treasure/dragon', treasureCtrl.dragonTreasure);
 // Create a get endpoint, '/api/treasure/user', with the function treasureCtrl.getUserTreasure.
-app.get('/api/treasure/user', treasureCtrl.getUserTreasure);
+// Apply the usersOnly middleware that we have just created by referencing the middleware function between the endpoint path and the controller function.
+app.get('/api/treasure/user', auth.usersOnly, treasureCtrl.getUserTreasure);
+app.post("/api/treasure/user", auth.usersOnly, treasureCtrl.addUserTreasure);
+app.get("/api/treasure/all", auth.usersOnly, auth.adminsOnly, treasureCtrl.getAllTreasure);
 // Make the server listen on the previously mentioned port number using app.listen
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));

@@ -31,4 +31,3 @@ VALUES
 ('http://www.theholidayspot.com/easter/treasure_hunt/images/treasure-chest.png', 1),
 ('https://comps.canstockphoto.com/opened-treasure-chest-with-treasures-illustration_csp15511126.jpg', 2),
 ('https://vignette.wikia.nocookie.net/politicsandwar/images/d/d9/Treasure.jpg/revision/latest?cb=20170515133205', 3);
-
